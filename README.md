@@ -42,3 +42,14 @@ You can also unbind events that get bound by `bound`.
 ```javascript
     bound.unbind( emitter, eventMethodObject, context );
 ```
+
+## Contributing
+
+To contribute you will need to make sure all the test are passing. To run the test you will need [mocha](http://visionmedia.github.io/mocha/). Then install the dependecies.
+
+    $ npm install
+
+Then to run the test
+
+    $ npm test
+
