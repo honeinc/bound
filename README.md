@@ -1,7 +1,7 @@
 ## Bound
 
 a simple way do a large amount of event bindings. Heavily inspired by backbones event bindings in views.
-![Bound2][http://media.giphy.com/media/V1Qwtvtb32L3a/giphy.gif]
+![Bound2](http://media.giphy.com/media/V1Qwtvtb32L3a/giphy.gif)
 
 ### To Install
 
