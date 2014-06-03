@@ -1,13 +1,33 @@
-module.exports = bounds;
+
+module.exports = _bounds.bind( null, 'addEventListener', false );
 
 function noop () {}
+// here to store refs to bound functions
+var _fns = {};
 
 var bindEvent = 
-module.exports.bindEvent = function ( fn, eventName, handler, context ) {
+module.exports.bindEvent = function ( fn, eventName, handler, context, removeCache ) {
+    var handlerString = handler.toString();
     if ( typeof handler !== 'function' ) {
         return;
     }
-    fn( eventName, handler.bind( context ) );
+    /* 
+      this is to cache the function so it can be unbound from the event
+      because fn.bind( ) create a new function, which mean fn === fn.bind() is false
+    */ 
+    if ( !_fns[ eventName ] ) {
+        _fns[eventName] = {};
+    }
+    if ( !_fns[ eventName ][ handlerString ] ) {
+        _fns[ eventName ][ handlerString ] = handler.bind( context );
+    }
+    handler = _fns[ eventName ][ handlerString ];
+
+    fn( eventName, handler );
+    // clear cache on unbind
+    if ( removeCache ) {
+        delete _fns[ eventName ][ handlerString ];
+    }
 }
 
 var getMethod =
@@ -19,7 +39,7 @@ module.exports.getMethod = function ( handleName, context ) {
 };
 
 var eachEvent = 
-module.exports.eachEvent = function ( fn, eventObj, context ) {
+module.exports.eachEvent = function ( fn, eventObj, context, removeCache ) {
     var event,
         eventHandle,
         bindTo;
@@ -41,16 +61,24 @@ module.exports.eachEvent = function ( fn, eventObj, context ) {
         } else {
             eventHandle = event;
         }
-        bindEvent( fn, _event, eventHandle, bindTo || context );
+        bindEvent( fn, _event, eventHandle, bindTo || context, removeCache );
     }
 };
 
-function bounds ( eventEmitter, eventObj, context ) {
-    var eventMethod;
-    if ( typeof eventEmitter === 'function' ) {
-        eventMethod = eventMethod;
-    } else {
-        eventMethod = eventEmitter.on || noop;
-    }
+module.exports.bind = 
+module.exports.on =
+module.exports.addEventListener = _bounds.bind( null, 'addEventListener', false );
 
+module.exports.unbind =
+module.exports.off =
+module.exports.removeListener = _bounds.bind( null, 'removeListener', true );
+
+function _bounds ( method, removeCache, emitter, eventObj, context  ) {
+    var eventMethod;
+    if ( typeof emitter === 'function' ) {
+        eventMethod = emitter;
+    } else {
+        eventMethod = ( emitter[ method ] ? emitter[method].bind( emitter ) : noop );
+    }
+    eachEvent( eventMethod, eventObj, context, removeCache );
 }

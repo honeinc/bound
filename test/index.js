@@ -1,5 +1,5 @@
 var assert = require('assert'),
-    Emitter = require('events').EventEmitter,
+    Emitter = require('component-emitter'),
     emitter = new Emitter();
     bounds = require('../index.js');
 
@@ -21,7 +21,7 @@ describe( 'bounds', function ( ) {
                 done();
             }
             // need to bind this
-            bounds.bindEvent( emitter.on.bind( emitter ), 'test', handle, { test : 'yeah' });
+            bounds.bindEvent( emitter.on.bind(emitter), 'test', handle, { test : 'yeah' });
             emitter.emit('test', 'hello');
         });
     });
@@ -110,4 +110,53 @@ describe( 'bounds', function ( ) {
             emitter.emit('test5.another', 'louise');
         });
     });
+
+    it('should bind an event to an object given if a proper handler is given', function( done ){
+        function handle ( msg ) {
+            assert.equal( 'hello world', msg );
+            assert.equal( 'ice', this.nice );
+            done();
+        }
+        bounds( emitter, {
+            'test6' : 'handle'
+        }, { 
+            handle : handle,
+            nice : 'ice'
+        });
+        emitter.emit('test6', 'hello world');
+    });
+
+    describe( '#unbind', function ( ) {
+            it('should unbind an event to an emitter', function ( done ) {
+                function handle ( msg ) {
+                    throw new Error('Error event handle executed when it should not have');
+                }
+                setTimeout( done, 500 );
+                bounds( emitter, {
+                    'test7' : handle
+                });
+                bounds.unbind( emitter, {
+                    'test7' : handle
+                });
+                emitter.emit('test7', 'hello world');
+        });
+    });
+
+    describe( '#unbind', function ( ) {
+        it('should bind an event to an object given if a proper handler is given', function( done ){
+            function handle ( msg ) {
+                assert.equal( 'hello world', msg );
+                assert.equal( 'ice', this.nice );
+                done();
+            }
+            bounds.bind( emitter, {
+                'test8' : 'handle'
+            }, { 
+                handle : handle,
+                nice : 'ice'
+            });
+            emitter.emit('test8', 'hello world');
+        });    
+    });
+    
 });
