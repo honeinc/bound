@@ -1,15 +1,13 @@
 {
-  "name": "bounds",
-  "version": "0.0.0",
+  "name": "bound",
+  "version": "0.0.3",
   "description": "A simple module to help streamline event binding",
   "main": "index.js",
   "directories": {
     "test": "test"
   },
-  "dependencies": {
-    "expect": "~0.1.1"
-  },
   "devDependencies": {
+    "expect": "~0.1.1",
     "component-emitter": "~1.1.2"
   },
   "scripts": {

@@ -1,5 +1,5 @@
 
-module.exports = _bounds.bind( null, 'addEventListener', false );
+module.exports = _bound.bind( null, 'addEventListener', false );
 
 function noop () {}
 // here to store refs to bound functions
@@ -67,13 +67,13 @@ module.exports.eachEvent = function ( fn, eventObj, context, removeCache ) {
 
 module.exports.bind = 
 module.exports.on =
-module.exports.addEventListener = _bounds.bind( null, 'addEventListener', false );
+module.exports.addEventListener = _bound.bind( null, 'addEventListener', false );
 
 module.exports.unbind =
 module.exports.off =
-module.exports.removeListener = _bounds.bind( null, 'removeListener', true );
+module.exports.removeListener = _bound.bind( null, 'removeListener', true );
 
-function _bounds ( method, removeCache, emitter, eventObj, context  ) {
+function _bound ( method, removeCache, emitter, eventObj, context  ) {
     var eventMethod;
     if ( typeof emitter === 'function' ) {
         eventMethod = emitter;
