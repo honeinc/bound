@@ -73,6 +73,10 @@ module.exports.unbind =
 module.exports.off =
 module.exports.removeListener = _bound.bind( null, 'removeListener', true );
 
+module.exports.setMethod = function ( method, removeCache ) {
+    return _bound.bind( null, method, removeCache );
+};
+
 function _bound ( method, removeCache, emitter, eventObj, context  ) {
     var eventMethod;
     if ( typeof emitter === 'function' ) {
