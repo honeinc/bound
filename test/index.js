@@ -158,5 +158,12 @@ describe( 'bounds', function ( ) {
             emitter.emit('test8', 'hello world');
         });    
     });
+
+    describe( '#setMethod', function ( ) {
+        it('should return a function', function( ){
+            var getRoutes = bounds.setMethod( 'get' );
+            assert.equal( typeof getRoutes, 'function' );
+        });    
+    });
     
 });
