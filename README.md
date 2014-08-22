@@ -7,6 +7,10 @@ a simple way do a large amount of event bindings. Heavily inspired by backbones 
 
     $ component install honeinc/bound
 
+or on node
+
+    $ npm install node-bound
+
 
 ### Example Usage
 
