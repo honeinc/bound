@@ -1,4 +1,4 @@
-## Bound
+## Bound [![Build Status](https://travis-ci.org/honeinc/bound.svg?branch=master)](https://travis-ci.org/honeinc/bound)
 
 a simple way do a large amount of event bindings. Heavily inspired by backbones event bindings in views.
 ![Bound2](http://media.giphy.com/media/PbEnCbd9rLPi0/giphy.gif)
