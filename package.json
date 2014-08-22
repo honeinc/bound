@@ -1,5 +1,5 @@
 {
-  "name": "bound",
+  "name": "node-bound",
   "version": "0.0.3",
   "description": "A simple module to help streamline event binding",
   "main": "index.js",
