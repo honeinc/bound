@@ -79,10 +79,10 @@ module.exports.setMethod = function ( method, removeCache ) {
 
 function _bound ( method, removeCache, emitter, eventObj, context  ) {
     var eventMethod;
-    if ( typeof emitter === 'function' ) {
-        eventMethod = emitter;
-    } else {
+    if ( emitter && typeof emitter[ method ] === 'function' ) {
         eventMethod = ( emitter[ method ] ? emitter[method].bind( emitter ) : noop );
+    } else {
+        eventMethod = emitter;
     }
     eachEvent( eventMethod, eventObj, context, removeCache );
 }
