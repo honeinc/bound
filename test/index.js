@@ -126,6 +126,12 @@ describe( 'bounds', function ( ) {
         emitter.emit('test6', 'hello world');
     });
 
+    it('should not throw an error if an improper handler is given', function( ){
+        bounds( emitter, {
+            'test6' : 'handle'
+        }, {});
+    });
+
     describe( '#unbind', function ( ) {
             it('should unbind an event to an emitter', function ( done ) {
                 function handle ( msg ) {

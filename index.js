@@ -7,10 +7,10 @@ var _fns = {};
 
 var bindEvent = 
 module.exports.bindEvent = function ( fn, eventName, handler, context, removeCache ) {
-    var handlerString = handler.toString();
     if ( typeof handler !== 'function' ) {
         return;
     }
+    var handlerString = handler.toString();
     /* 
       this is to cache the function so it can be unbound from the event
       because fn.bind( ) create a new function, which mean fn === fn.bind() is false
