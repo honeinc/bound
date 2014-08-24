@@ -10,6 +10,10 @@
     "expect": "~0.1.1",
     "component-emitter": "~1.1.2"
   },
+  "repostiory": {
+    "type": "git",
+    "url": "https://github.com/jacoblwe20/node-mongo-stream.git"
+  },
   "scripts": {
     "test": "mocha test/*"
   },
