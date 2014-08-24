@@ -1,16 +1,16 @@
 var assert = require('assert'),
     Emitter = require('component-emitter'),
     emitter = new Emitter();
-    bounds = require('../index.js');
+    bound = require('../index.js');
 
-describe( 'bounds', function ( ) {
+describe( 'bound', function ( ) {
     describe( '#getMethod', function ( ) {
         it('should return undefined if a bad method name is given', function ( ) {
-            assert.equal( undefined, bounds.getMethod('hello') );
+            assert.equal( undefined, bound.getMethod('hello') );
         });
         it('should return a function if a good method name is given', function ( ) {
             function world ( ) { }
-            assert.equal( world.toString(), bounds.getMethod('hello', { hello : world }).toString() );
+            assert.equal( world.toString(), bound.getMethod('hello', { hello : world }).toString() );
         });
     });
     describe( '#bindEvents', function ( ) {
@@ -21,7 +21,7 @@ describe( 'bounds', function ( ) {
                 done();
             }
             // need to bind this
-            bounds.bindEvent( emitter.on.bind(emitter), 'test', handle, { test : 'yeah' });
+            bound.bindEvent( emitter.on.bind(emitter), 'test', handle, { test : 'yeah' });
             emitter.emit('test', 'hello');
         });
     });
@@ -37,7 +37,7 @@ describe( 'bounds', function ( ) {
                 done();
             }
             // need to bind this
-            bounds.eachEvent( emitter.on.bind( emitter ), {
+            bound.eachEvent( emitter.on.bind( emitter ), {
                 'test2': handle,
                 'test2.another': handle2
             }, { test : 'yeah' });
@@ -56,7 +56,7 @@ describe( 'bounds', function ( ) {
                 done();
             }
             // need to bind this
-            bounds.eachEvent( emitter.on.bind( emitter ), {
+            bound.eachEvent( emitter.on.bind( emitter ), {
                 'test3': [ { testing : true }, handle ],
                 'test3.another': [ { cool : 'beans' }, handle2 ]
             });
@@ -79,7 +79,7 @@ describe( 'bounds', function ( ) {
                 cool : 'cucumbers'
             };
             // need to bind this
-            bounds.eachEvent( emitter.on.bind( emitter ), {
+            bound.eachEvent( emitter.on.bind( emitter ), {
                 'test4': 'one',
                 'test4.another': 'two' 
             }, handles );
@@ -102,7 +102,7 @@ describe( 'bounds', function ( ) {
                 cool : 'cucumbers'
             };
             // need to bind this
-            bounds.eachEvent( emitter.on.bind( emitter ), {
+            bound.eachEvent( emitter.on.bind( emitter ), {
                 'test5': [ handles, 'one' ],
                 'test5.another': [ handles, 'two' ] 
             });
@@ -117,7 +117,7 @@ describe( 'bounds', function ( ) {
             assert.equal( 'ice', this.nice );
             done();
         }
-        bounds( emitter, {
+        bound( emitter, {
             'test6' : 'handle'
         }, { 
             handle : handle,
@@ -127,7 +127,7 @@ describe( 'bounds', function ( ) {
     });
 
     it('should not throw an error if an improper handler is given', function( ){
-        bounds( emitter, {
+        bound( emitter, {
             'test6' : 'handle'
         }, {});
     });
@@ -138,10 +138,10 @@ describe( 'bounds', function ( ) {
                     throw new Error('Error event handle executed when it should not have');
                 }
                 setTimeout( done, 500 );
-                bounds( emitter, {
+                bound( emitter, {
                     'test7' : handle
                 });
-                bounds.unbind( emitter, {
+                bound.unbind( emitter, {
                     'test7' : handle
                 });
                 emitter.emit('test7', 'hello world');
@@ -155,7 +155,7 @@ describe( 'bounds', function ( ) {
                 assert.equal( 'ice', this.nice );
                 done();
             }
-            bounds.bind( emitter, {
+            bound.bind( emitter, {
                 'test8' : 'handle'
             }, { 
                 handle : handle,
@@ -167,7 +167,7 @@ describe( 'bounds', function ( ) {
 
     describe( '#setMethod', function ( ) {
         it('should return a function', function( ){
-            var getRoutes = bounds.setMethod( 'get' );
+            var getRoutes = bound.setMethod( 'get' );
             assert.equal( typeof getRoutes, 'function' );
         });    
     });
