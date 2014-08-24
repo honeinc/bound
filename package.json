@@ -12,7 +12,7 @@
   },
   "repostiory": {
     "type": "git",
-    "url": "https://github.com/jacoblwe20/node-mongo-stream.git"
+    "url": "https://github.com/honeinc/bound.git"
   },
   "scripts": {
     "test": "mocha test/*"
