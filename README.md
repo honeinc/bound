@@ -57,3 +57,9 @@ Then to run the test
 
     $ npm test
 
+## CHANGES
+
+0.1.0
+====
+- Add support for binding to node-style emitters in addition to browser-based emitters.
+

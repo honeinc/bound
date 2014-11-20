@@ -1,6 +1,8 @@
 var assert = require('assert'),
     Emitter = require('component-emitter'),
-    emitter = new Emitter();
+    emitter = new Emitter(),
+    NodeEmitter = require( 'events' ).EventEmitter,
+    nodeEmitter = new NodeEmitter(),
     bound = require('../index.js');
 
 describe( 'bound', function ( ) {
@@ -126,6 +128,21 @@ describe( 'bound', function ( ) {
         emitter.emit('test6', 'hello world');
     });
 
+    it('should bind an event to a node-based emitter if a proper handler is given', function( done ){
+        function handle_node ( msg ) {
+            assert.equal( 'hello world', msg );
+            assert.equal( 'ice', this.nice );
+            done();
+        }
+        bound( nodeEmitter, {
+            'test6' : 'handle_node'
+        }, { 
+            handle_node : handle_node,
+            nice : 'ice'
+        });
+        nodeEmitter.emit('test6', 'hello world');
+    });
+    
     it('should not throw an error if an improper handler is given', function( ){
         bound( emitter, {
             'test6' : 'handle'
