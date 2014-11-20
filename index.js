@@ -1,5 +1,9 @@
+/* jshint browser: true */
+/* jshint node: true */
 
-module.exports = _bound.bind( null, 'addEventListener', false );
+'use strict';
+
+module.exports = _bound.bind( null, 'on', false );
 
 function noop () {}
 // here to store refs to bound functions
@@ -14,7 +18,7 @@ module.exports.bindEvent = function ( fn, eventName, handler, context, removeCac
     /* 
       this is to cache the function so it can be unbound from the event
       because fn.bind( ) create a new function, which mean fn === fn.bind() is false
-    */ 
+    */
     if ( !_fns[ eventName ] ) {
         _fns[eventName] = {};
     }
@@ -28,7 +32,7 @@ module.exports.bindEvent = function ( fn, eventName, handler, context, removeCac
     if ( removeCache ) {
         delete _fns[ eventName ][ handlerString ];
     }
-}
+};
 
 var getMethod =
 module.exports.getMethod = function ( handleName, context ) {
@@ -67,22 +71,36 @@ module.exports.eachEvent = function ( fn, eventObj, context, removeCache ) {
 
 module.exports.bind = 
 module.exports.on =
-module.exports.addEventListener = _bound.bind( null, 'addEventListener', false );
+module.exports.addEventListener =
+module.exports.addListener = _bound.bind( null, 'on', false );
 
 module.exports.unbind =
 module.exports.off =
-module.exports.removeListener = _bound.bind( null, 'removeListener', true );
+module.exports.removeEventListener =
+module.exports.removeListener = _bound.bind( null, 'off', true );
 
 module.exports.setMethod = function ( method, removeCache ) {
     return _bound.bind( null, method, removeCache );
 };
 
-function _bound ( method, removeCache, emitter, eventObj, context  ) {
-    var eventMethod;
-    if ( emitter && typeof emitter[ method ] === 'function' ) {
-        eventMethod = ( emitter[ method ] ? emitter[method].bind( emitter ) : noop );
-    } else {
-        eventMethod = emitter;
+function _bound( method, removeCache, emitter, eventObj, context  ) {
+    
+    var eventMethod = emitter ? emitter[ method ] : null;
+    if ( !eventMethod && emitter ) {
+        switch( method ) {
+            case 'on':
+                eventMethod = emitter.addEventListener || emitter.addListener;
+                break;
+            case 'off':
+                eventMethod = emitter.removeEventListener || emitter.removeListener;
+                break;
+        }
     }
+    
+    if ( !eventMethod ) {
+        throw new Error( 'Could not bind to method "' + method + '".' );
+    }
+
+    eventMethod = eventMethod.bind( emitter );
     eachEvent( eventMethod, eventObj, context, removeCache );
 }
