@@ -7,4 +7,4 @@ before_script:
 notifications:
     slack:
         rooms:
-            - gohone:k6kkTNlonb8PrSUb890lrpC5#tech
+            - secure: "Qk4p9Lj+g1a4OfQqVO0NXLblqK35ayZb/AEf/v/Tr0K9aA1bUSTISXPU7c9tGQdtE3yYhYk4/48GeIbqd6mvQDtxJZy3QPuLUnythfGZA6xy0OCG/kFrHbq90w88JrYvNwVuMZunJvUmwwM4KltY4wudnQa/BT0YXyfTGPU8Yes=" 
