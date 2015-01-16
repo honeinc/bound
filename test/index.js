@@ -23,9 +23,10 @@ describe( 'bound', function ( ) {
                 done();
             }
             // need to bind this
-            bound.bindEvent( emitter.on.bind(emitter), 'test', handle, { test : 'yeah' });
+            bound.bindEvent( emitter.on.bind(emitter), 'test', handle, [{ test : 'yeah' }]);
             emitter.emit('test', 'hello');
         });
+
     });
     describe( '#eachEvent', function ( ) {
         it('should bind each event given in a object to the function given', function ( done ) {
@@ -47,7 +48,7 @@ describe( 'bound', function ( ) {
             emitter.emit('test2.another', 'hello');
         });
 
-        it('should bind to the event emitter and also bind context ( first param ) of the handler ( second param ) when array is given', function ( done ) {
+        it('should bind to the event emitter and also bind context ( first param ) of the handler ( second param ) when array is given and no context is given', function ( done ) {
             function handle ( msg ) {
                 assert.equal( 'hello', msg );
                 assert.equal( true, this.testing );
@@ -64,6 +65,29 @@ describe( 'bound', function ( ) {
             });
             emitter.emit('test3', 'hello');
             emitter.emit('test3.another', 'jeeze');
+        });
+
+        it('should bind a function in the first param in an array, and the bind the nth other items in the array as a partial when an array is given as a value and a context is given as the third param', function ( done ) {
+            function handleFoo ( msg, opts ) {
+                assert.equal( 'foo', msg );
+                assert.equal( 'object', typeof opts );
+                assert.equal( 'qux', opts.baz );
+                assert.equal( 'bar', this.foo );
+                assert.equal( 'qux', this.baz );
+            }
+            function handleBar ( msg ) {
+                assert.equal( 'bar', msg );
+                assert.equal( 'bar', this.foo );
+                assert.equal( 'qux', this.baz );
+                done();
+            }
+            // need to bind this
+            bound.eachEvent( emitter.on.bind( emitter ), {
+                'testFoo': [ handleFoo, 'foo', { baz: 'qux' } ],
+                'testBar': [ handleBar, 'bar' ]
+            }, { foo: 'bar', baz: 'qux' } );
+            emitter.emit('testFoo', 'qux');
+            emitter.emit('testBar', 'baz');
         });
 
         it('should bind to the event emitter to method from the context when a string is given', function ( done ) {
