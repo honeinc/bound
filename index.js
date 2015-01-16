@@ -19,7 +19,7 @@ module.exports.bindEvent = function ( fn, eventName, handler, context, removeCac
         _fns[eventName] = {};
     }
     if ( !_fns[ eventName ][ handlerString ] ) {
-        _fns[ eventName ][ handlerString ] = handler.bind( context );
+        _fns[ eventName ][ handlerString ] = handler.bind.apply( handler, context );
     }
     handler = _fns[ eventName ][ handlerString ];
 
@@ -28,14 +28,14 @@ module.exports.bindEvent = function ( fn, eventName, handler, context, removeCac
     if ( removeCache ) {
         delete _fns[ eventName ][ handlerString ];
     }
-}
+};
 
 var getMethod =
 module.exports.getMethod = function ( handleName, context ) {
     if ( typeof context !== 'object' ) {
         return;
     }
-    return ( context || window )[ handleName ];
+    return typeof handleName === 'function' ? handleName : ( context || window )[ handleName ];
 };
 
 var eachEvent = 
@@ -46,22 +46,26 @@ module.exports.eachEvent = function ( fn, eventObj, context, removeCache ) {
     for ( var _event in eventObj ) {
         event = eventObj[ _event ];
         if ( Array.isArray( event ) ) {
-            if ( typeof event[ 0 ] === 'object' ) {
+            if ( typeof event[ 0 ] === 'object' && !context ) {
                 bindTo = event[ 0 ];
                 if ( typeof event[ 1 ]  === 'string' ) {
                     eventHandle = getMethod( event[ 1 ], bindTo );
                 } else {
                     eventHandle = event[ 1 ];
                 }
+                bindTo = [ bindTo ];
             } else {
-                eventHandle = event[ 1 ];
+                eventHandle = getMethod( event.shift(), context );
+                event.unshift( context );
+                bindTo = event;
             }
         } else if ( typeof event === 'string' ) {
             eventHandle = getMethod( event, context );
         } else {
             eventHandle = event;
         }
-        bindEvent( fn, _event, eventHandle, bindTo || context, removeCache );
+
+        bindEvent( fn, _event, eventHandle, bindTo || [ context ], removeCache );
     }
 };
 
