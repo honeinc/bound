@@ -7,14 +7,16 @@ module.exports = _bound.bind( null, 'on', false );
 
 function noop () {}
 // here to store refs to bound functions
-var _fns = {};
+var _fns = {},
+    md5 = require( 'blueimp-md5' ).md5,
+    utils = require( './src/utils' );
 
 var bindEvent = 
 module.exports.bindEvent = function ( fn, eventName, handler, context, removeCache ) {
     if ( typeof handler !== 'function' ) {
         return;
     }
-    var handlerString = handler.toString();
+    var _id = md5( handler.toString() + JSON.stringify( utils.decycleObject( context ) ) );
     /* 
       this is to cache the function so it can be unbound from the event
       because fn.bind( ) create a new function, which mean fn === fn.bind() is false
@@ -22,15 +24,15 @@ module.exports.bindEvent = function ( fn, eventName, handler, context, removeCac
     if ( !_fns[ eventName ] ) {
         _fns[eventName] = {};
     }
-    if ( !_fns[ eventName ][ handlerString ] ) {
-        _fns[ eventName ][ handlerString ] = handler.bind.apply( handler, context );
+    if ( !_fns[ eventName ][ _id ] ) {
+        _fns[ eventName ][ _id ] = handler.bind.apply( handler, context );
     }
-    handler = _fns[ eventName ][ handlerString ];
+    handler = _fns[ eventName ][ _id ];
 
     fn( eventName, handler );
     // clear cache on unbind
     if ( removeCache ) {
-        delete _fns[ eventName ][ handlerString ];
+        delete _fns[ eventName ][ _id ];
     }
 };
 
