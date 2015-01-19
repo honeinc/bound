@@ -173,6 +173,18 @@ describe( 'bound', function ( ) {
         }, {});
     });
 
+    it('should allow for binding the same handler, same event, but differnt partials, and the correct payload will be bound', function( done ) {
+        function handle( test ) {
+            assert.equal( typeof test, 'object' );
+            assert.equal( typeof test.foo, 'bar' );
+            done();
+        }
+
+        bound( nodeEmitter, { 'foo': [ handle, 1 ] }, {} );
+        bound( emitter, { 'foo': [ handle, { foo: 'bar' }]}, {} );
+        emitter.emit( 'foo' );
+    });
+
     describe( '#unbind', function ( ) {
             it('should unbind an event to an emitter', function ( done ) {
                 function handle ( msg ) {
