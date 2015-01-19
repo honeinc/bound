@@ -14,7 +14,7 @@ module.exports.bindEvent = function ( fn, eventName, handler, context, removeCac
     if ( typeof handler !== 'function' ) {
         return;
     }
-    var handlerString = handler.toString();
+    var _id = handler.toString() + JSON.stringify( context );
     /* 
       this is to cache the function so it can be unbound from the event
       because fn.bind( ) create a new function, which mean fn === fn.bind() is false
@@ -22,15 +22,15 @@ module.exports.bindEvent = function ( fn, eventName, handler, context, removeCac
     if ( !_fns[ eventName ] ) {
         _fns[eventName] = {};
     }
-    if ( !_fns[ eventName ][ handlerString ] ) {
-        _fns[ eventName ][ handlerString ] = handler.bind.apply( handler, context );
+    if ( !_fns[ eventName ][ _id ] ) {
+        _fns[ eventName ][ _id ] = handler.bind.apply( handler, context );
     }
-    handler = _fns[ eventName ][ handlerString ];
+    handler = _fns[ eventName ][ _id ];
 
     fn( eventName, handler );
     // clear cache on unbind
     if ( removeCache ) {
-        delete _fns[ eventName ][ handlerString ];
+        delete _fns[ eventName ][ _id ];
     }
 };
 
