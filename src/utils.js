@@ -43,6 +43,9 @@ module.exports.decycleObject = function (object) {
 // If the value is an object or array, look to see if we have already
 // encountered it. If so, return a $ref/path object. This is a hard way,
 // linear search that will get slower as the number of unique objects grows.
+            if ( value.tagName ) {
+                return {$el: value.tagName + '#' + value.id + '.' + value.className};
+            }
 
             for (i = 0; i < objects.length; i += 1) {
                 if (objects[i] === value) {
