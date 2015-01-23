@@ -186,34 +186,41 @@ describe( 'bound', function ( ) {
     });
 
     describe( '#unbind', function ( ) {
-            it('should unbind an event to an emitter', function ( done ) {
-                function handle ( msg ) {
-                    throw new Error('Error event handle executed when it should not have');
-                }
-                setTimeout( done, 500 );
-                bound( emitter, {
-                    'test7' : handle
-                });
-                bound.unbind( emitter, {
-                    'test7' : handle
-                });
-                emitter.emit('test7', 'hello world');
+        it('should unbind an event to an emitter', function ( done ) {
+            var context = {
+                id: '1'
+            };
+            function handle ( msg ) {
+                throw new Error('Error event handle executed when it should not have');
+            }
+            setTimeout( done, 500 );
+            bound( emitter, {
+                'test7' : handle
+            }, context );
+
+            bound.unbind( emitter, {
+                'test7' : handle
+            }, context );
+            emitter.emit('test7', 'hello world');
         });
     });
 
-    describe( '#unbind', function ( ) {
+    describe( '#bind', function ( ) {
         it('should bind an event to an object given if a proper handler is given', function( done ){
+            var context = {};
             function handle ( msg ) {
                 assert.equal( 'hello world', msg );
                 assert.equal( 'ice', this.nice );
                 done();
             }
-            bound.bind( emitter, {
-                'test8' : 'handle'
-            }, { 
+            var context = { 
                 handle : handle,
                 nice : 'ice'
-            });
+            };
+            bound.bind( emitter, {
+                'test8' : 'handle'
+            }, context );
+            assert.equal( typeof context._boundListeners, 'object' )
             emitter.emit('test8', 'hello world');
         });    
     });
