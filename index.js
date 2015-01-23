@@ -7,8 +7,7 @@ module.exports = _bound.bind( null, 'on', false );
 
 function noop () {}
 // here to store refs to bound functions
-var _fns = {},
-    md5 = require( 'blueimp-md5' ).md5,
+var md5 = require( 'blueimp-md5' ).md5,
     utils = require( './src/utils' );
 
 var bindEvent = 
@@ -16,23 +15,27 @@ module.exports.bindEvent = function ( fn, eventName, handler, context, removeCac
     if ( typeof handler !== 'function' ) {
         return;
     }
-    var _id = md5( handler.toString() + JSON.stringify( utils.decycleObject( context ) ) );
+    var _id = md5( handler.toString() + JSON.stringify( utils.decycleObject( context.slice( 1 ) ) ) ),
+        _context = context[ 0 ];
     /* 
       this is to cache the function so it can be unbound from the event
       because fn.bind( ) create a new function, which mean fn === fn.bind() is false
     */
-    if ( !_fns[ eventName ] ) {
-        _fns[eventName] = {};
+    _context._boundListeners = _context._boundListeners || {};
+
+    if ( !_context._boundListeners[ eventName ] ) {
+        _context._boundListeners[ eventName ] = {};
     }
-    if ( !_fns[ eventName ][ _id ] ) {
-        _fns[ eventName ][ _id ] = handler.bind.apply( handler, context );
+
+    if ( !_context._boundListeners[ eventName ][ _id ] ) {
+        _context._boundListeners[ eventName ][ _id ] = handler.bind.apply( handler, context );
     }
-    handler = _fns[ eventName ][ _id ];
+    handler = _context._boundListeners[ eventName ][ _id ];
 
     fn( eventName, handler );
     // clear cache on unbind
     if ( removeCache ) {
-        delete _fns[ eventName ][ _id ];
+        delete _context._boundListeners[ eventName ][ _id ];
     }
 };
 
