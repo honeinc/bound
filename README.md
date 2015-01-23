@@ -5,31 +5,30 @@ a simple way do a large amount of event bindings. Heavily inspired by backbones 
 
 ### To Install
 
-    $ component install honeinc/bound
-
-or on node
-
     $ npm install node-bound
 
+This also works with [browserify](http://browserify.org).
 
 ### Example Usage
 
-Lets say you have a controller, that you want to consume some events from a common messaging system that uses events. Other component used in example is [honeinc/emit](https://github.com/honeinc/emit.git).
+Lets say you have a controller, that you want to consume some events from a common messaging system that uses events.
 
 ```javascript
-var emit = require('emit'),
-    bound = require('bound');
+var emitter = new ( require( 'events' ).EventEmitter )(), // new EventEmitter()
+    bound = require('node-bound');
 
-function UserController ( ) {
-    bound( emit, {
-        'user:save' : 'handleSave',
-        'user:create' : 'handleCreate',
-        'user:delete' : 'handleDelete'
+function UserController ( data ) {
+    bound( emitter, {
+        'user:save' : 'handleSave', // emit.addListener( 'user:save', this.handleSave.bind( this ) );
+        'user:create' : [ 'handleCreate', data.anonId ] , // support for partials
+        'user:delete' : this.handleDelete // pass a function instead
     }, this );
 }
 
-UserController.prototype.handleSave = function ( ) { /* ... */ };
-UserController.prototype.handleCreate = function ( ) { /* ... */ };
+UserController.prototype.handleSave = function ( ) { 
+    console.log( this ); // [ Object UserController ] 
+};
+UserController.prototype.handleCreate = function ( partialParam ) { /* ... */ };
 UserController.prototype.handleDelete = function ( ) { /* ... */ };
 
 ```
@@ -40,12 +39,15 @@ This will bind all the events in the given context to the right method and keep 
     bound( emitter, eventMethodObject, context );
 // eventEmitter ^ event : method ^        ^ context of method
 ```
+There is also a bunch of aliases: `bound.on`, `bound.bind`, `bound.addEventListener`, `bound.addListener`
 
 You can also unbind events that get bound by `bound`.
 
 ```javascript
     bound.unbind( emitter, eventMethodObject, context );
 ```
+Unbinding also has aliases: `bound.off`, `bound.unbind`, `bound.removeEventListener`, `bound.removeListener`
+
 
 ## Contributing
 
@@ -56,10 +58,4 @@ To contribute you will need to make sure all the test are passing. To run the te
 Then to run the test
 
     $ npm test
-
-## CHANGES
-
-0.1.0
-====
-- Add support for binding to node-style emitters in addition to browser-based emitters.
 
