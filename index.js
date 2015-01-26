@@ -7,7 +7,7 @@ module.exports = _bound.bind( null, 'on', false );
 
 function noop () {}
 // here to store refs to bound functions
-var md5 = require( 'blueimp-md5' ).md5,
+var murmur = require( 'murmurhash-js' ),
     utils = require( './src/utils' );
 
 var bindEvent = 
@@ -15,7 +15,7 @@ module.exports.bindEvent = function ( fn, eventName, handler, context, removeCac
     if ( typeof handler !== 'function' ) {
         return;
     }
-    var _id = md5( handler.toString() + JSON.stringify( utils.decycleObject( context.slice( 1 ) ) ) ),
+    var _id = murmur( handler.toString() + JSON.stringify( utils.decycleObject( context.slice( 1 ) ) ), 1 ),
         _context = context[ 0 ];
     /* 
       this is to cache the function so it can be unbound from the event
