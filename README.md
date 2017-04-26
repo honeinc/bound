@@ -51,7 +51,7 @@ Unbinding also has aliases: `bound.off`, `bound.unbind`, `bound.removeEventListe
 
 ## Contributing
 
-To contribute you will need to make sure all the test are passing. To run the test you will need [mocha](http://visionmedia.github.io/mocha/). Then install the dependecies.
+To contribute you will need to make sure all the test are passing. To run the test you will need [mocha](http://mochajs.org/). Then install the dependecies.
 
     $ npm install
 
